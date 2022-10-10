@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#alias ll='ls -l --color=auto'
+
+function ll(){
+ls -la 
+}
+
 sudo mkdir -m 777 -p /opt/openwrt/image
 if [ ! -d /opt/openwrt ];then
   echo 目录创建失败:/opt/openwrt
@@ -74,8 +80,14 @@ popd
 }
 
 #官方默认包
+#参考 https://downloads.openwrt.org/releases/22.03-SNAPSHOT/targets/x86/64/config.buildinfo
+#CONFIG_PACKAGE_cgi-io=y ... ... 
 val_office="\
  cgi-io \
+ libbpf \
+ libelf \
+ libiwinfo \
+ libiwinfo-data \
  libiwinfo-lua \
  liblua \
  liblucihttp \
@@ -99,22 +111,25 @@ val_office="\
  luci-ssl \
  luci-theme-bootstrap \
  px5g-wolfssl \
+ qosify \
  rpcd \
  rpcd-mod-file \
  rpcd-mod-iwinfo \
  rpcd-mod-luci \
  rpcd-mod-rrdns \
+ tc-full \
+ tc-mod-iptables \
  uhttpd \
  uhttpd-mod-ubus \
+ zlib \
  "
  
 #公用
 #自定义附加包,用中文语言文件,自动引入原包
 #ddns依赖wget-ssl,curl,drill
 #luci-i18n-ttyd-zh-cn https有问题
+#luci-i18n-base-en  这个包没有,去掉
 val_more="$val_office  \
- \
-luci-i18n-base-en \
 luci-i18n-base-zh-cn \
 luci-i18n-ddns-zh-cn wget-ssl curl drill \
 luci-i18n-firewall-zh-cn \
@@ -135,12 +150,12 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz > /dev/null
+  wget -q https://downloads.openwrt.org/releases/22.03-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-22.03-SNAPSHOT-x86-64.Linux-x86_64.tar.xz  
 
-  tar -xf openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz
+  tar -xf openwrt-imagebuilder-22.03-SNAPSHOT-x86-64.Linux-x86_64.tar.xz
 fi
 
-cd openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64
+cd openwrt-imagebuilder-22.03-SNAPSHOT-x86-64.Linux-x86_64
 
 #差异包
 val_base="\
@@ -148,7 +163,7 @@ val_base="\
  libiwinfo-data \
  "
 
-make info | grep "Current Revision"
+#make info | grep "Current Revision"
 
 create_custom
 
@@ -175,13 +190,13 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz
-  wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/generic/openwrt-imagebuilder-21.02-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz > /dev/null
+ 
+  wget -q https://downloads.openwrt.org/releases/22.03-SNAPSHOT/targets/x86/generic/openwrt-imagebuilder-22.03-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz  
 
-  tar -xf openwrt-imagebuilder-21.02-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz
+  tar -xf openwrt-imagebuilder-22.03-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz
 fi
 
-cd openwrt-imagebuilder-21.02-SNAPSHOT-x86-generic.Linux-x86_64
+cd openwrt-imagebuilder-22.03-SNAPSHOT-x86-generic.Linux-x86_64
 
 ##差异包
 val_base="\
@@ -189,7 +204,7 @@ val_base="\
  libiwinfo-data \
  "
 
-make info 
+#make info 
 
 create_custom
 
@@ -209,24 +224,28 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/generic/openwrt-imagebuilder-21.02-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz
-  wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/ramips/mt7620/openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7620.Linux-x86_64.tar.xz > /dev/null
 
-  tar -xf openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7620.Linux-x86_64.tar.xz
+  wget -q https://downloads.openwrt.org/releases/22.03-SNAPSHOT/targets/ramips/mt7620/openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7620.Linux-x86_64.tar.xz 
+
+  tar -xf openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7620.Linux-x86_64.tar.xz
 fi
 
-cd openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7620.Linux-x86_64
+cd openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7620.Linux-x86_64
 
 ##差异包
 val_base="\
  "
 
-make info 
+#make info 
 
 create_custom
 
-make image PROFILE=phicomm_psg1218a FILES="files" PACKAGES="$val_base $val_more"
+#空间不够,减少包
+make image PROFILE=phicomm_k2-v22.4 FILES="files" PACKAGES="$val_base $val_office luci-i18n-base-zh-cn \
+luci-i18n-firewall-zh-cn \
+luci-i18n-opkg-zh-cn \
+luci-i18n-upnp-zh-cn "
+
 cd bin/targets/ramips/mt7620
 ll
 mv -f *squashfs-sysupgrade.bin /opt/openwrt/image/
@@ -242,21 +261,19 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/generic/openwrt-imagebuilder-21.02-SNAPSHOT-x86-generic.Linux-x86_64.tar.xz
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/ramips/mt7620/openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7620.Linux-x86_64.tar.xz
-  wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/ramips/mt7621/openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7621.Linux-x86_64.tar.xz > /dev/null
 
-  tar -xf openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7621.Linux-x86_64.tar.xz
+  wget -q  https://downloads.openwrt.org/releases/22.03-SNAPSHOT/targets/ramips/mt7621/openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7621.Linux-x86_64.tar.xz  
+
+  tar -xf openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7621.Linux-x86_64.tar.xz
 fi
 
-cd openwrt-imagebuilder-21.02-SNAPSHOT-ramips-mt7621.Linux-x86_64
+cd openwrt-imagebuilder-22.03-SNAPSHOT-ramips-mt7621.Linux-x86_64
 
 ##差异包
 val_base="\
  "
 
-make info 
+#make info 
 
 create_custom
 
@@ -277,8 +294,8 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  #wget https://downloads.openwrt.org/releases/21.02-SNAPSHOT/targets/x86/64/openwrt-imagebuilder-21.02-SNAPSHOT-x86-64.Linux-x86_64.tar.xz > /dev/null
-  wget  https://downloads.openwrt.org/snapshots/targets/x86/64/openwrt-imagebuilder-x86-64.Linux-x86_64.tar.xz
+  
+  wget -q  https://downloads.openwrt.org/snapshots/targets/x86/64/openwrt-imagebuilder-x86-64.Linux-x86_64.tar.xz
 
   tar -xf openwrt-imagebuilder-x86-64.Linux-x86_64.tar.xz
 fi
@@ -291,7 +308,7 @@ val_base="\
  libiwinfo-data \
  "
 
-make info | grep "Current Revision"
+#make info | grep "Current Revision"
 
 create_custom
 
@@ -311,7 +328,7 @@ pwd
 
 ls *.xz
 if [ $? != 0 ];then
-  wget https://downloads.openwrt.org/snapshots/targets/x86/generic/openwrt-imagebuilder-x86-generic.Linux-x86_64.tar.xz > /dev/null
+  wget -q https://downloads.openwrt.org/snapshots/targets/x86/generic/openwrt-imagebuilder-x86-generic.Linux-x86_64.tar.xz 
 
   tar -xf openwrt-imagebuilder-x86-generic.Linux-x86_64.tar.xz
 fi
@@ -324,7 +341,7 @@ val_base="\
  libiwinfo-data \
  "
 
-make info 
+#make info 
 
 create_custom
 
@@ -347,7 +364,7 @@ pwd
 ls *.xz
 if [ $? != 0 ];then
  
-  wget https://downloads.openwrt.org/snapshots/targets/ramips/mt7620/openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz > /dev/null
+  wget -q https://downloads.openwrt.org/snapshots/targets/ramips/mt7620/openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz  
 
   tar -xf openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz
 fi
@@ -358,11 +375,16 @@ cd openwrt-imagebuilder-ramips-mt7620.Linux-x86_64
 val_base="\
  "
 
-make info 
+#make info 
 
 create_custom
 
-make image PROFILE=phicomm_k2-v22.4 FILES="files" PACKAGES="$val_base $val_more"
+#空间不够,减少包
+make image PROFILE=phicomm_k2-v22.4 FILES="files" PACKAGES="$val_base $val_office luci-i18n-base-zh-cn \
+luci-i18n-firewall-zh-cn \
+luci-i18n-opkg-zh-cn \
+luci-i18n-upnp-zh-cn "
+
 cd bin/targets/ramips/mt7620
 #openwrt-ramips-mt7620-phicomm_k2-v22.4-squashfs-sysupgrade.bin
 ll
@@ -380,7 +402,7 @@ pwd
 ls *.xz
 if [ $? != 0 ];then
 
-  wget https://downloads.openwrt.org/snapshots/targets/ramips/mt7621/openwrt-imagebuilder-ramips-mt7621.Linux-x86_64.tar.xz > /dev/null
+  wget -q  https://downloads.openwrt.org/snapshots/targets/ramips/mt7621/openwrt-imagebuilder-ramips-mt7621.Linux-x86_64.tar.xz  
 
   tar -xf openwrt-imagebuilder-ramips-mt7621.Linux-x86_64.tar.xz
 fi
@@ -391,7 +413,7 @@ cd openwrt-imagebuilder-ramips-mt7621.Linux-x86_64
 val_base="\
  "
 
-make info 
+#make info 
 
 create_custom
 
@@ -419,8 +441,8 @@ cat << "EOF" >> readme.txt
 
 # 附件会生成8个升级包
 
-1. 名字中有21.02的是**稳定版**,偶尔会有更新
-2. 没有21.02的是**最新开发版**,每天都会有不少更新
+1. 名字中有22.03的是**稳定版[22.03分支]**,偶尔会有更新
+2. 没有22.03的是**最新开发版[master分支]**,每天都会有不少更新
 3. 安装后可以从路由器内从软件包内更新,不用每次刷整包
 
 
@@ -428,12 +450,12 @@ EOF
 
 }
 
-#最新开发版
+#最新开发版,在master上
 buildk2pdev
 buildk2dev
 build32dev
 build64dev
-#21.02 稳定版
+#22.03.X 稳定版
 buildk2p
 buildk2
 build32
