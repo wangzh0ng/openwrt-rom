@@ -1,3 +1,4 @@
+ls -alh /
 sudo mkdir -m 777 -p /opt/EmuELEC
 if [ ! -d /opt/EmuELEC ];then
   echo 目录创建失败:/opt/EmuELEC
