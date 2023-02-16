@@ -36,7 +36,7 @@ jobs:
   # This workflow contains a single job called "greet"
   greet:
   # The type of runner that the job will run on ubuntu-latest
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:    
@@ -44,6 +44,7 @@ jobs:
       run: |
         whoami
         id
+        uname -a
         echo 接收到的输入参数:
         echo "${{ github.event.inputs.production }}"
         echo "${{ github.event.inputs.release }}"
@@ -93,7 +94,7 @@ jobs:
       if: true
       run: |
         echo $GITHUB_WORKSPACE
-        bash $GITHUB_WORKSPACE/buildsh/buildsh/EmuELEC.sh
+        bash -x $GITHUB_WORKSPACE/buildsh/buildsh/EmuELEC.sh
         
     - name : 上传编译的固件Artifacts
       uses: actions/upload-artifact@v2
