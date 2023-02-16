@@ -79,7 +79,7 @@ jobs:
         libfreeimage-dev libfreetype6-dev libcurl4-openssl-dev rapidjson-dev libasound2-dev \
         libgl1-mesa-dev build-essential libboost-all-dev cmake fonts-droid-fallback libvlc-dev \
         libvlccore-dev vlc-bin texinfo premake4 golang libssl-dev curl patchelf xmlstarlet default-jre xsltproc \
-         tzdata xfonts-utils lzop > /dev/null
+         tzdata xfonts-utils lzop perl libparse-yapp-perl gperf  libxml-parser-perl patchutils patchutils > /dev/null
   
     - name: 下载编译脚本
       uses: actions/checkout@v2.3.4
