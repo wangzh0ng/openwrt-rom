@@ -6,11 +6,9 @@ if [ ! -d /opt/EmuELEC ];then
 fi
 
 cd /opt/EmuELEC
-git clone https://github.com/EmuELEC/EmuELEC.git
-cd EmuELEC
+git clone https://github.com/CoreELEC/CoreELEC.git
+cd CoreELEC
 git checkout dev
-tree
-sed -i /s/emuelec-ports//g  EmuELEC/packages/sx05re/emuelec/package.mk 
 PROJECT=Amlogic-ce DEVICE=Amlogic-ng ARCH=aarch64 DISTRO=EmuELEC make image
 tree
 ls -alh
