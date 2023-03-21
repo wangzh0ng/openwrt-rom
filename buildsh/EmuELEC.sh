@@ -3,7 +3,10 @@ git clone https://github.com/CoreELEC/CoreELEC.git
 cd CoreELEC
 sed -i 's/rsync,//g'  packages/addons/tools/network-tools/package.mk
 sed -i 's/rsync \\//g'  packages/addons/tools/network-tools/package.mk
-cat packages/addons/tools/network-tools/package.mk
+sed -i 's/rsync//g'  packages/virtual/network/package.mk
+sed -i 's/rsync:host//g' packages/linux/package.mk
+sed -i 's/rsync:host//g' projects/Amlogic-ce/packages/linux/package.mk
+sed -i 's/rsync:host//g' projects/Amlogic-ce/devices/Amlogic-ne/packages/linux/package.mk
 echo ${TARGET_IMG}
 env
 #
