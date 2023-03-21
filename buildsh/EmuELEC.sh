@@ -8,7 +8,7 @@ fi
 cd /opt/EmuELEC
 git clone https://github.com/CoreELEC/CoreELEC.git
 cd CoreELEC
-git checkout dev
+git checkout coreelec-20
 PROJECT=Amlogic-ce DEVICE=Amlogic-ng ARCH=aarch64 DISTRO=EmuELEC make image
 tree
 ls -alh
