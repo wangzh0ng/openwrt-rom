@@ -7,6 +7,7 @@ sed -i 's/rsync//g'  packages/virtual/network/package.mk
 sed -i 's/rsync:host//g' packages/linux/package.mk
 sed -i 's/rsync:host//g' projects/Amlogic-ce/packages/linux/package.mk
 sed -i 's/rsync:host//g' projects/Amlogic-ce/devices/Amlogic-ne/packages/linux/package.mk
+sed -i 's/RTL8821CU//g' projects/Amlogic-ce/devices/Amlogic-ng/options
 echo ${TARGET_IMG}
 env
 #
