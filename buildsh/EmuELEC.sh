@@ -1,5 +1,6 @@
 cd /opt/
 git clone https://github.com/CoreELEC/CoreELEC.git
+git checkout coreelec-21
 cd CoreELEC
 sed -i 's/rsync,//g'  packages/addons/tools/network-tools/package.mk
 sed -i 's/rsync \\//g'  packages/addons/tools/network-tools/package.mk
