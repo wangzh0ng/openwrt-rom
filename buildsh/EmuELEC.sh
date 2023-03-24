@@ -14,6 +14,6 @@ sed -i 's/nfs-utils//g' distributions/CoreELEC/options
 echo ${TARGET_IMG}
 env
 #
-PROJECT=Amlogic-ce DEVICE=Amlogic-ng ARCH=aarch64  DISTRO=LibreELEC  make image
+PROJECT=Amlogic-ce DEVICE=Amlogic-ng  make image
 ls /opt/CoreELEC/image -alh
 #tree 
