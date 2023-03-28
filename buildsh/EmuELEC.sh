@@ -16,4 +16,6 @@ env
 #
 PROJECT=Amlogic-ce DEVICE=Amlogic-ng  make image
 ls /opt/CoreELEC/image -alh
+echo 'target'
+ls /opt/CoreELEC/target -alh
 #tree 
