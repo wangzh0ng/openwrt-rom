@@ -1,3 +1,4 @@
+sudo apt install build-essential
 cd /opt/
 git clone https://github.com/CoreELEC/CoreELEC.git
 git checkout coreelec-20
